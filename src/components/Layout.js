@@ -15,7 +15,7 @@ import { useTheme } from '@mui/material/styles';
 import { ColorModeContext } from '../App';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCategories, createCategory, updateCategory, deleteCategory } from '../store/categoriesSlice';
+import { fetchCategories, createCategory, updateCategory, deleteCategory, deleteCategoryWithItems } from '../store/categoriesSlice';
 import CategoryDialog from './CategoryDialog';
 
 const drawerWidth = 280;
@@ -50,10 +50,22 @@ const Layout = () => {
         setCategoryDialogOpen(true);
     };
 
-    const handleDeleteCategory = (id, e) => {
+    const handleDeleteCategory = async (id, e) => {
         e.stopPropagation();
         if (window.confirm('Ви впевнені, що хочете видалити цю категорію?')) {
-            dispatch(deleteCategory(id));
+            try {
+                // We unwrap to handle the promise result directly here
+                await dispatch(deleteCategory(id)).unwrap();
+            } catch (err) {
+                // If it fails with 400, it likely has items
+                if (err.status === 400 || (err.message && err.message.includes('items'))) {
+                    if (window.confirm('Ця категорія містить завдання. Видалити категорію та відв\'язати завдання?')) {
+                        dispatch(deleteCategoryWithItems(id));
+                    }
+                } else {
+                    alert(`Помилка видалення: ${err.message || 'Невідома помилка'}`);
+                }
+            }
         }
     };
 

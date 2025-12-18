@@ -18,6 +18,11 @@ import {
     itemLoopToggled,
     itemPriorityUpdated
 } from './store/itemsSlice';
+import {
+    categoryAdded,
+    categoryUpdated,
+    categoryDeleted
+} from './store/categoriesSlice';
 
 export const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
@@ -58,6 +63,30 @@ function App() {
             signalRService.on('itemPriorityUpdated', (data) => {
                 dispatch(itemPriorityUpdated(data));
             });
+
+            // --- Categories Handlers ---
+            // Listening for both lowercase and PascalCase to be safe
+            const onCategoryCreated = (category) => {
+                console.log('SignalR: Category Created', category);
+                dispatch(categoryAdded(category));
+            };
+            const onCategoryUpdated = (category) => {
+                console.log('SignalR: Category Updated', category);
+                dispatch(categoryUpdated(category));
+            };
+            const onCategoryDeleted = (id) => {
+                console.log('SignalR: Category Deleted', id);
+                dispatch(categoryDeleted(id));
+            };
+
+            signalRService.on('categoryCreated', onCategoryCreated);
+            signalRService.on('CategoryCreated', onCategoryCreated);
+
+            signalRService.on('categoryUpdated', onCategoryUpdated);
+            signalRService.on('CategoryUpdated', onCategoryUpdated);
+
+            signalRService.on('categoryDeleted', onCategoryDeleted);
+            signalRService.on('CategoryDeleted', onCategoryDeleted);
         }
 
         return () => {
@@ -67,6 +96,12 @@ function App() {
             signalRService.off('itemCompleted');
             signalRService.off('itemLoopToggled');
             signalRService.off('itemPriorityUpdated');
+            signalRService.off('categoryCreated');
+            signalRService.off('CategoryCreated');
+            signalRService.off('categoryUpdated');
+            signalRService.off('CategoryUpdated');
+            signalRService.off('categoryDeleted');
+            signalRService.off('CategoryDeleted');
             // connection stop is optional, maybe we want to keep it? 
             // Usually valid to stop if token is gone (logout)
             if (!token) {

@@ -104,7 +104,10 @@ const itemsSlice = createSlice({
     },
     reducers: {
         itemAdded: (state, action) => {
-            state.items.push(action.payload);
+            const exists = state.items.some(i => i.id === action.payload.id);
+            if (!exists) {
+                state.items.push(action.payload);
+            }
         },
         itemUpdated: (state, action) => {
             const index = state.items.findIndex(i => i.id === action.payload.id);
@@ -141,7 +144,10 @@ const itemsSlice = createSlice({
 
             // Create
             .addCase(createItem.fulfilled, (state, action) => {
-                state.items.push(action.payload);
+                const exists = state.items.some(i => i.id === action.payload.id);
+                if (!exists) {
+                    state.items.push(action.payload);
+                }
             })
 
             // Update
