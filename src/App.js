@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
+import RegistrationPage from './pages/RegistrationPage';
 import ItemsPage from './pages/ItemsPage';
 import PrivateRoute from './components/PrivateRoute';
 
@@ -121,6 +122,7 @@ function App() {
                 <CssBaseline />
                 <Routes>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegistrationPage />} />
 
                     <Route path="/" element={
                         <PrivateRoute>

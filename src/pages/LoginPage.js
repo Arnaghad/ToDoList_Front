@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/authSlice';
-import { useNavigate } from 'react-router-dom';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Container, TextField, Button, Typography, Box, Link } from '@mui/material';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -39,6 +39,11 @@ const LoginPage = () => {
                     >
                         Увійти
                     </Button>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <Link component={RouterLink} to="/register" variant="body2">
+                            Немає акаунту? Зареєструватися
+                        </Link>
+                    </Box>
                 </Box>
             </Box>
         </Container>
